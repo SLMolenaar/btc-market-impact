@@ -1,0 +1,19 @@
+# Data — never commit raw or processed data files
+data/raw/
+data/processed/
+*.parquet
+*.csv
+*.zip
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Outputs — commit figures manually if you want
+outputs/
+
+# OS
+.DS_Store

@@ -1,0 +1,12 @@
+requests
+pandas
+pyarrow
+tqdm
+numpy
+torch
+scikit-learn
+pysr
+matplotlib
+seaborn
+statsmodels
+jupyterlab
