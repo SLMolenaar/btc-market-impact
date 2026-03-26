@@ -41,13 +41,15 @@ def load_month(month: str) -> pd.DataFrame:
     df = pd.read_csv(path, header=None, names=[
         "agg_trade_id", "price", "qty",
         "first_trade_id", "last_trade_id",
-        "timestamp_ms", "is_buyer_maker"
+        "timestamp_us", "is_buyer_maker", "is_best_match"
     ], dtype={
         "price": np.float64,
         "qty": np.float64,
-        "timestamp_ms": np.int64,
+        "timestamp_us": np.int64,
         "is_buyer_maker": bool
     })
+    # Timestamps are in microseconds, convert to milliseconds
+    df["timestamp_ms"] = df["timestamp_us"] // 1000
     df["side"] = np.where(df["is_buyer_maker"], -1, 1)
     return df[["timestamp_ms", "price", "qty", "side"]].sort_values("timestamp_ms").reset_index(drop=True)
 

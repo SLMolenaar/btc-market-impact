@@ -2,7 +2,7 @@
 
 Training an MLP on synthetic metaorders reconstructed from Binance BTC/USDT
 public trade data, then using symbolic regression to extract the formula it
-learns — and asking whether that formula changes across market regimes.
+learns, and asking whether that formula changes across market regimes.
 
 **Research question:** Does a neural network trained on reconstructed metaorder
 impact data rediscover the square-root law I(Q) ∝ √Q, and does the learned
