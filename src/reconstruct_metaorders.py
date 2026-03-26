@@ -160,14 +160,15 @@ def extract_metaorders(df: pd.DataFrame, trader_ids: np.ndarray) -> pd.DataFrame
 
 
 def compute_daily_stats(df: pd.DataFrame) -> pd.DataFrame:
-    """Compute daily volume and realized volatility for normalization."""
     df = df.copy()
     df["date"] = pd.to_datetime(df["timestamp_ms"], unit="ms").dt.date
     df["log_return"] = np.log(df["price"]).diff()
 
     daily = df.groupby("date").agg(
         V_daily=("qty", "sum"),
-        sigma_daily=("log_return", "std"),
+        # Realized volatility: sqrt of sum of squared returns
+        # Standard measure in microstructure literature
+        sigma_daily=("log_return", lambda x: np.sqrt((x**2).sum())),
     ).reset_index()
 
     return daily
