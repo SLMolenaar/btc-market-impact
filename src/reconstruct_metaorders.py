@@ -272,4 +272,4 @@ if __name__ == "__main__":
     print(f"Total metaorders : {len(metaorders_df):,}")
     print(f"Median Q_norm    : {metaorders_df['Q_norm'].median():.2e}")
     print(f"Median n_child   : {metaorders_df['n_child'].median():.1f}")
-    print("\nNext: open notebooks/01b_metaorders.ipynb")
+    print("\nNext: open notebooks/02_benchmark.ipynb")
