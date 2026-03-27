@@ -19,7 +19,7 @@ from pathlib import Path
 from tqdm import tqdm
 
 SYMBOL   = "BTCUSDT"
-MONTHS   = ["2025-12", "2026-01", "2026-02"]
+MONTHS   = ["2025-12", "2026-01"]
 BASE_URL = "https://data.binance.vision/data/spot/monthly"
 RAW_DIR  = Path(__file__).parent.parent / "data" / "raw"
 
