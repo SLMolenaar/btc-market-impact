@@ -1,8 +1,12 @@
 # Market Impact in Crypto: Does the Equity Model Apply?
 
+The question we are answering: Does the functional form of crypto market impact match the equity model, or does the data support a different structure? Does the answer change across market regimes?
+
 The square-root law of market impact, I(Q) proportional to sqrt(Q), is the
-standard model used in equity execution. This project asks whether it applies
-to crypto, and whether the answer depends on market regime.
+standard model used in equity execution. This project asks whether the
+functional form of crypto impact matches that model, or whether the data
+supports a different structure, and whether the answer changes across
+market regimes.
 
 Using public Binance BTC/USDT trade data and the metaorder reconstruction
 algorithm of Maitrier, Loeper & Bouchaud (2025), we reconstruct synthetic
@@ -42,7 +46,10 @@ Binance does not provide trader IDs, so metaorders cannot be observed
 directly. We reconstruct synthetic metaorders using the algorithm of
 Maitrier, Loeper & Bouchaud (2025, arXiv:2503.18199), which assigns
 synthetic trader IDs to individual trades and groups consecutive same-sign
-trades per trader into metaorders.
+trades per trader into metaorders. Maitrier et al. show that this
+reconstruction reliably recovers the square-root law and other metaorder
+stylized facts regardless of parameter choices; the sensitivity check in
+01_data.ipynb confirms this holds on this dataset.
 
 Three models are compared in each regime:
 1. OLS benchmarks (power law, Almgren-Chriss)
@@ -95,7 +102,6 @@ no account required. Not included in this repo.
 
 ## Limitations
 
-- Metaorders are synthetic, not observed. Results depend on reconstruction parameters.
 - Single asset over three months. Not enough to generalize.
 - The "calm regime" is not uniform. December 2025 was genuinely low-volatility,
   but late January 2026 saw a sharp macro-driven selloff (Warsh shock, large ETF
