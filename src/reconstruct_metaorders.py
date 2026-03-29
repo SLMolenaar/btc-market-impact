@@ -220,7 +220,6 @@ def verify_square_root_law(metaorders_df: pd.DataFrame):
     print(f"  delta (slope) : {slope:.4f}")
     print(f"  95% CI        : [{slope - 1.96*se:.4f}, {slope + 1.96*se:.4f}]")
     print(f"  R²            : {r**2:.4f}")
-    print(f"  delta ~ 0.5?  : {abs(slope - 0.5) < 0.15}")
 
 
 if __name__ == "__main__":
@@ -273,4 +272,3 @@ if __name__ == "__main__":
     print(f"Total metaorders : {len(metaorders_df):,}")
     print(f"Median Q_norm    : {metaorders_df['Q_norm'].median():.2e}")
     print(f"Median n_child   : {metaorders_df['n_child'].median():.1f}")
-    print("\nNext: open notebooks/02_benchmark.ipynb")

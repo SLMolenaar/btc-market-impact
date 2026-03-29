@@ -150,4 +150,3 @@ if __name__ == "__main__":
     print(f"\nTotal trades : {len(combined):,}")
     print(f"Date range   : {t_min} to {t_max}")
     print(f"Saved to     : {out_path}")
-    print("\nNext: open notebooks/01_data.ipynb")

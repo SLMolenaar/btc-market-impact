@@ -101,4 +101,3 @@ if __name__ == "__main__":
 
     fetch_agg_trades()
     print_summary()
-    print("\nDone. Run src/process_data.py next.")
