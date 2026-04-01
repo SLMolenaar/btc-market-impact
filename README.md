@@ -65,7 +65,7 @@ MLP-A is statistically indistinguishable from Almgren-Chriss in stress (DM test 
 
 ## Prior work
 
-Donier & Bonart (2014) confirm the sqrt law on Bitcoin/USD using a complete dataset with real trader IDs from 2014, when Bitcoin was a small, illiquid market with near-zero statistical arbitrage. This project uses the Maitrier et al. (2025) reconstruction on 2025 data, where the market structure is fundamentally different: 10x the volume, professional market makers, and continuous arbitrage with perpetual futures. The difference in findings is consistent with genuine market structure differences. Reconstruction quality without ground-truth trader IDs cannot be ruled out as a contributing factor.
+Donier & Bonart (2014) confirm the sqrt law on Bitcoin/USD using a complete dataset with real trader IDs. This project finds no evidence of it on 2025 BTC/USDT data. The two results are not directly comparable: their market had near-zero statistical arbitrage and no institutional participation; the 2025 market has 10x the volume, professional market makers, and continuous arbitrage with perpetual futures. Whether the difference reflects genuine market structure change or reconstruction quality without ground-truth trader IDs cannot be determined from this data alone.
 
 ## Methodology
 
