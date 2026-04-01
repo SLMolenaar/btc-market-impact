@@ -27,7 +27,8 @@ import pandas as pd
 from pathlib import Path
 
 SYMBOL        = "BTCUSDT"
-MONTHS        = ["2025-12", "2026-01"]
+MONTHS = ["2025-08", "2025-09"] # calm
+# MONTHS = ["2025-11"] # stress
 RAW_DIR       = Path(__file__).parent.parent / "data" / "raw"
 PROCESSED_DIR = Path(__file__).parent.parent / "data" / "processed"
 

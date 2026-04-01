@@ -10,41 +10,42 @@ Using public Binance BTC/USDT trade data and the metaorder reconstruction algori
 
 The equity sqrt law does not hold on 2025 BTC/USDT in either regime. The empirical size exponent is ~0.1 in both calm and stress conditions, far from the theoretical 0.5. The functional form differs between regimes, but not in the direction of the equity model.
 
-### Calm regime (Dec 2025 / Jan 2026)
+### Calm regime (Aug / Sep 2025)
 
 The formula PySR extracts from the trained MLP is:
 
 ```
-I ~ Q^(-0.246) / sigma
+log I ≈ (-5.510 / log_Q) + (log_sigma * -0.692) + -6.879
 ```
 
-Size-dependence is weak and inverted relative to theory. The dominant factor is daily volatility in the denominator. This result is stable across PySR random seeds and reconstruction parameter choices.
+Since log_Q is always negative, the size term `-5.510 / log_Q` is always positive but shrinks as Q grows. Larger metaorders have lower normalized impact. The dominant factor is log_sigma. The sqrt law structure is absent.
 
-### Stress regime (Feb 2026, market crash)
+### Stress regime (Nov 2025, market crash)
 
-Sigma spikes 4.7x vs calm. The PySR formula changes structurally:
+Sigma rises 2.3x vs calm. The PySR formula changes structurally:
 
 ```
-log I ≈ (8.132 / log_sigma) + (-19.628 / log_V)
+log I ≈ (exp(log_sigma / 4.352) * -7.764) + (log_Q * 0.040)
 ```
 
-Log_Q disappears entirely. Under stress, metaorder size carries no predictive value for normalized impact. Volatility and volume determine impact; size does not.
+The sigma term becomes exponential rather than linear. log_Q enters directly and positively, but with a small coefficient (~0.040). log_V drops out entirely in both regimes. The sqrt law is absent here too.
 
 ### Regime comparison
 
 |  | Calm | Stress |
 |---|---|---|
-| OLS delta | 0.107 | 0.096 |
-| MLP-A mean local slope | 0.044 | 0.041 |
-| PySR formula | Q^(-0.246) / sigma | f(sigma, V) only |
-| log_Q in formula | Yes (negative) | No |
+| OLS delta | 0.100 | 0.129 |
+| MLP-A mean local slope | 0.042 | 0.041 |
+| PySR formula | (-5.510 / log_Q) + (log_sigma * -0.692) + -6.879 | (exp(log_sigma / 4.352) * -7.764) + (log_Q * 0.040) |
+| log_Q in formula | Yes (1/log_Q) | Yes (log_Q directly) |
+| Sigma functional form | Linear | Exponential |
 | Matches equity model | No | No |
 
-The crash did not move delta toward 0.5. It stayed flat and the impact function became less dependent on size, not more.
+OLS delta rose modestly under stress (0.100 to 0.129). The MLP local slope is unchanged (0.042 vs 0.041). The binned OLS relationship steepened; the continuous size-impact function the network learned did not.
 
 ![Impact formula slope comparison](outputs/figures/formula_comparison_regimes.png)
 
-*All empirical lines (calm and stress, MLP and PySR) lie in a narrow band near zero slope. The sqrt law reference reaches 3.5 log-units above them at the right edge. The stress PySR is flat, consistent with log_Q being absent from the formula.*
+*All empirical lines (calm and stress, MLP and PySR) lie in a narrow band near zero slope. The sqrt law reference reaches 3.5 log-units above them at the right edge.*
 
 ![Size exponent by method and regime](outputs/figures/delta_comparison.png)
 
@@ -54,17 +55,17 @@ The crash did not move delta toward 0.5. It stayed flat and the impact function 
 
 | Model | Calm | Stress |
 |---|---|---|
-| Power law (delta=0.5, constrained) | 1.282 | 0.994 |
-| Power law (delta fitted) | 1.063 | 0.618 |
-| Almgren-Chriss | 0.672 | 0.608 |
-| MLP-A | 0.685 | 0.622 |
-| MLP-B | 0.604 | 0.561 |
+| Power law (delta=0.5, constrained) | 1.272 | 0.996 |
+| Power law (delta fitted) | 0.909 | 0.689 |
+| Almgren-Chriss | 0.661 | 0.573 |
+| MLP-A | 0.668 | 0.574 |
+| MLP-B | 0.605 | 0.506 |
 
-MLP-A matches Almgren-Chriss in calm. MLP-B beats it by ~10% in both regimes. R² is near zero for all models in stress, reflecting the low predictability of the crash period.
+MLP-A is statistically indistinguishable from Almgren-Chriss in stress (DM test p = 0.089): a nonlinear model on the same three features adds nothing in the high-noise regime. MLP-B beats Almgren-Chriss in both regimes; n_child and utc_hour add predictive value that log_Q, log_sigma, and log_V do not capture.
 
 ## Prior work
 
-Donier & Bonart (2014) confirm the sqrt law on Bitcoin/USD using a complete dataset with real trader IDs from 2014, when Bitcoin was a small, illiquid market with near-zero statistical arbitrage. This project uses the Maitrier et al. (2025) reconstruction on 2025 data, where the market structure is fundamentally different: 10x the volume, professional market makers, and continuous arbitrage with perpetual futures. The difference in findings is consistent with genuine market structure differences, though reconstruction quality without ground-truth trader IDs cannot be ruled out as a contributing factor.
+Donier & Bonart (2014) confirm the sqrt law on Bitcoin/USD using a complete dataset with real trader IDs from 2014, when Bitcoin was a small, illiquid market with near-zero statistical arbitrage. This project uses the Maitrier et al. (2025) reconstruction on 2025 data, where the market structure is fundamentally different: 10x the volume, professional market makers, and continuous arbitrage with perpetual futures. The difference in findings is consistent with genuine market structure differences. Reconstruction quality without ground-truth trader IDs cannot be ruled out as a contributing factor.
 
 ## Methodology
 
@@ -77,7 +78,7 @@ Three models are compared in each regime:
 
 ![Metaorder price impact vs size](outputs/figures/loglog_metaorders.png)
 
-*Log-log plot of binned median impact vs metaorder size (calm regime). The OLS fit gives delta = 0.114. The sqrt law (delta = 0.5) is shown for reference.*
+*Log-log plot of binned median impact vs metaorder size (calm regime). The OLS fit gives delta = 0.100. The sqrt law (delta = 0.5) is shown for reference.*
 
 ## Setup
 
@@ -103,7 +104,7 @@ python src/reconstruct_metaorders.py
 jupyter lab
 ```
 
-For the stress regime, set `MONTHS = ["2026-02"]` in `fetch_data.py` and `process_data.py` and save the output as `impact_data_stress.parquet` before running `05_stress.ipynb`.
+For the stress regime, set `MONTHS = ["2025-11"]` in `fetch_data.py` and `process_data.py` and save the output as `impact_data_stress.parquet` before running `05_stress.ipynb`.
 
 ## Notebooks
 
@@ -113,23 +114,23 @@ For the stress regime, set `MONTHS = ["2026-02"]` in `fetch_data.py` and `proces
 | `02_benchmark.ipynb` | OLS benchmarks, calm regime |
 | `03_mlp.ipynb` | MLP-A and MLP-B, calm regime |
 | `04_interpretability.ipynb` | Sensitivity analysis, PySR symbolic regression, calm regime |
-| `05_stress.ipynb` | Full pipeline repeat on Feb 2026 stress regime |
+| `05_stress.ipynb` | Full pipeline repeat on Nov 2025 stress regime |
 | `06_results.ipynb` | Comparison tables, Diebold-Mariano tests, final figures |
 
 ## Data
 
 Downloaded from [data.binance.vision](https://data.binance.vision). Free, no account required. Not included in this repo.
 
-**Calm regime:** BTC/USDT, Dec 2025 and Jan 2026. 64.5M trades, 1.56M reconstructed metaorders.
+**Calm regime:** BTC/USDT, Aug and Sep 2025. 44.4M trades, 921K reconstructed metaorders. Low-volatility, sideways market with sigma_daily mean ~0.006.
 
-**Stress regime:** BTC/USDT, Feb 2026 (market crash). 1.24M reconstructed metaorders. Processed separately with the same pipeline.
+**Stress regime:** BTC/USDT, Nov 2025 (market crash, -36% from ATH). 920K reconstructed metaorders. Sigma_daily mean ~0.013 (2.3x calm). Processed separately with the same pipeline.
 
 ## Limitations
 
-- Single asset over three months. Not enough to generalize.
-- The calm regime is not uniform. December 2025 was genuinely low-volatility, but late January 2026 saw a sharp macro-driven selloff (Warsh shock, large ETF outflows). The calm label applies cleanly to December; January is better described as mixed.
-- sigma_daily has near-categorical variation (one value per day), limiting reliable estimation of the volatility-impact relationship.
+- Single asset over two months. Not enough to generalize.
+- sigma_daily has near-categorical variation (one value per day), limiting reliable estimation of the volatility-impact relationship. This likely drives the anomalous negative beta in the Almgren-Chriss model.
 - No ground-truth trader IDs. The reconstruction produces synthetic metaorders whose size distribution may not reflect real institutional flow, particularly on retail-dominated spot markets.
+- The PySR sigma term is not stable across random seeds in the calm regime (linear vs 1/log_sigma structure across seeds). The size finding is stable; the exact sigma functional form is not.
 - Crypto microstructure differs from equities in ways that make direct comparison to the equity literature approximate.
 
 ## References
