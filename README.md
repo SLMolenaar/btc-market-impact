@@ -8,6 +8,13 @@ Using public Binance aggTrades data and the metaorder reconstruction algorithm o
 
 ## Results
 
+**Key findings:**
+
+- The square-root law is absent in all four experiments: OLS delta ranges 0.098–0.129 and MLP local slope ranges 0.026–0.042 across both assets and both regimes, both far from the theoretical 0.5.
+- The effective size contribution to impact is stable at ~0.04–0.06 across all PySR formulas regardless of asset, regime, or functional form, which points to a genuinely shallow size-impact relationship rather than a measurement artifact.
+- A nonlinear model on the same three features as Almgren-Chriss (log_Q, log_sigma, log_V) does not improve on linear OLS; adding metaorder length and time-of-day does, beating Almgren-Chriss in all four experiments.
+- Volatility dominates size in every model and every regime, but the functional form of the sigma term in the extracted formulas changes across regimes and is not stable across PySR random seeds.
+
 The equity sqrt law does not hold on 2025 crypto spot data. The empirical size exponent is ~0.1 across both assets and both regimes, far from the theoretical 0.5. The finding is robust across two assets, two regimes, and two measurement methods (OLS and MLP local slope).
 
 ### BTC/USDT, Calm regime (Aug / Sep 2025)
